@@ -1,0 +1,33 @@
+---
+- name: "Prepare."
+  hosts: "all,!sidecar"
+  become: true
+  tasks:
+    - name: "Install Python 3.8."
+      when: "ansible_hostname == 'rockylinux8'"
+      ansible.builtin.dnf:
+        name: "python38"
+        update_cache: true
+        state: "present"
+
+    - name: "Install nginx."
+      ansible.builtin.package:
+        name: "nginx"
+        state: "present"
+
+    - name: "Copy nginx configuration for Netbox."
+      ansible.builtin.copy:
+        src: "nginx.conf"
+        dest: "/etc/nginx/conf.d/netbox.conf"
+        mode: "0644"
+
+    # - name: "Enable nginx configuration for Netbox."
+    #   ansible.builtin.file:
+    #     src: "/etc/nginx/sites-available/netbox"
+    #     dest: "/etc/nginx/sites-enabled/netbox"
+    #     state: "link"
+
+    - name: "Restart nginx."
+      ansible.builtin.service:
+        name: "nginx"
+        state: "restarted"

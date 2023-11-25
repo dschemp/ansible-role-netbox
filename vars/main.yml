@@ -1,2 +1,4 @@
 ---
 netbox_service_name: "netbox"
+netbox_housekeeping_service_name: "{{ netbox_service_name }}-housekeeping"
+netbox_rq_service_name: "{{ netbox_service_name }}-rq"

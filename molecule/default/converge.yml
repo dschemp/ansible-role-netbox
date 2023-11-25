@@ -1,8 +1,14 @@
 ---
-- name: Converge
-  hosts: all:!sidecar
+- name: "Converge."
+  hosts: "all,!sidecar"
+  pre_tasks:
+    - name: "Set Python path."
+      when: "ansible_hostname == 'rockylinux8'"
+      ansible.builtin.set_fact:
+        netbox_python_path: "/usr/bin/python3.8"
+
   roles:
-    - role: dschemp.netbox
+    - role: "dschemp.netbox"
       become: true
       vars:
         netbox_db_host: "postgres"
@@ -14,3 +20,5 @@
             email: "jane.doe@example.com"
           - name: "John Doesnt"
             email: "john.doesnt@example.com"
+        netbox_census_reporting_enabled: false
+        netbox_listen_address: "0.0.0.0:8001"

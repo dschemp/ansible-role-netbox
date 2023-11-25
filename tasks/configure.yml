@@ -1,0 +1,30 @@
+---
+- name: "Copy configuration."
+  become: true
+  ansible.builtin.template:
+    src: "configuration.py.j2"
+    dest: "{{ netbox_path }}/netbox/netbox/configuration.py"
+    owner: "{{ netbox_user }}"
+    group: "{{ netbox_group }}"
+    mode: "0440"
+
+- name: "Copy gunicorn configuration."
+  become: true
+  ansible.builtin.template:
+    src: "gunicorn.py.j2"
+    dest: "{{ netbox_path }}/gunicorn.py"
+    owner: "{{ netbox_user }}"
+    group: "{{ netbox_group }}"
+    mode: "0440"
+
+- name: "Run upgrade script."
+  become: true
+  become_user: "{{ netbox_user }}"
+  environment:
+    PYTHON: "{{ netbox_python_path }}"
+  ansible.builtin.command:
+    cmd: "{{ netbox_path }}/upgrade.sh"
+  register: "__netbox_upgrade_script"
+  # TODO: changed_when.
+  # How do we detect a run, where something has changed besides DB migrations.
+  changed_when: "'No migrations to apply.' not in __netbox_upgrade_script.stdout"

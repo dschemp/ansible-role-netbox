@@ -1,0 +1,23 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=NetBox Housekeeping Service
+Documentation=https://docs.netbox.dev/
+After=network-online.target
+Wants=network-online.target
+
+
+[Service]
+Type=oneshot
+
+User=netbox
+Group=netbox
+WorkingDirectory={{ netbox_path }}
+
+ExecStart={{ netbox_path }}/venv/bin/python \
+            {{ netbox_path }}/netbox/manage.py \
+            housekeeping
+
+
+[Install]
+WantedBy=multi-user.target

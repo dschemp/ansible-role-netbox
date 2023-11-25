@@ -1,25 +1,32 @@
 {{ ansible_managed | comment }}
 
 [Unit]
-Description=Netbox is an IPAM management platform.
+Description=Netbox IPAM Management Platform
+Documentation=https://docs.netbox.dev/
 Wants=network-online.target
 After=network-online.target
 After=postgresql.service redis-server.service
 
+
 [Service]
+Type=simple
 User={{ netbox_user }}
 Group={{ netbox_group }}
-Type=notify
-Restart=on-failure
+WorkingDirectory={{ netbox_path }}
 
-## Prepare environment
-# ExecPreStart=
-## Run Netbox
-# ExecStart=
-## Shutdown Netbox
-# ExecStop=
-## Deactive environment
-# ExecPostStop=
+PIDFile=/var/tmp/{{ netbox_service_name }}.pid
+
+ExecStart={{ netbox_path }}/venv/bin/gunicorn \
+            --pid /var/tmp/{{ netbox_service_name }}.pid \
+            --pythonpath {{ netbox_path }}/netbox \
+            --config {{ netbox_path }}/gunicorn.py \
+            --chdir {{ netbox_path }} \
+            netbox.wsgi
+
+Restart=on-failure
+RestartSec=30s
+PrivateTmp=true
+
 
 [Install]
 WantedBy=multi-user.target
