@@ -1,6 +1,16 @@
 ---
 - name: Converge
-  hosts: all
+  hosts: all:!sidecar
   roles:
     - role: dschemp.netbox
       become: true
+      vars:
+        netbox_db_host: "postgres"
+        netbox_db_password: "netbox123!"
+        netbox_redis_tasks_host: "redis"
+        netbox_secret_key: "fFRpJoJ5FV1TfrlLcDo1eWjf35VUzPvCLpMUS8M4GxSNVL7tB5UjIYrVKII4MM86"
+        netbox_admins:
+          - name: "Jane Doe"
+            email: "jane.doe@example.com"
+          - name: "John Doesnt"
+            email: "john.doesnt@example.com"

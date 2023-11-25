@@ -1,2 +1,48 @@
 ---
-# tasks file for netbox
+- name: "Import preflight tasks."
+  ansible.builtin.import_tasks: "preflight.yml"
+
+- name: "Download and extract archive."
+  become: true
+  become_user: "{{ netbox_user }}"
+  ansible.builtin.unarchive:
+    src: "{{ netbox_url }}"
+    dest: "{{ netbox_path }}"
+    owner: "{{ netbox_user }}"
+    group: "{{ netbox_group }}"
+    mode: "0755"
+    remote_src: true
+
+- name: "Create link."
+  become: true
+  become_user: "{{ netbox_user }}"
+  ansible.builtin.file:
+    src: "{{ netbox_path }}/netbox-{{ netbox_version }}"
+    dest: "{{ netbox_path }}/app"
+    mode: "0755"
+    state: "link"
+
+- name: "Copy configuration."
+  become: true
+  become_user: "{{ netbox_user }}"
+  ansible.builtin.template:
+    src: "configuration.py.j2"
+    dest: "{{ netbox_path }}/app/netbox/netbox/configuration.py"
+    mode: "0440"
+
+- name: "Configure systemd service."
+  become: true
+  ansible.builtin.template:
+    src: "netbox.service.j2"
+    dest: "/etc/systemd/system/{{ netbox_service_name }}.service"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+
+- name: "Enable and start service."
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ netbox_service_name }}"
+    daemon_reload: true
+    enabled: true
+    state: "restarted"

@@ -8,6 +8,23 @@ driver:
   name: docker
 
 platforms:
+  - name: postgres
+    image: postgres:15-alpine
+    groups:
+      - sidecar
+    env:
+      POSTGRES_PASSWORD: "netbox123!"
+      POSTGRES_USER: netbox
+      POSTGRES_DB: netbox
+    published_ports:
+      - 5432:5432
+  - name: redis
+    image: redis:7-alpine
+    groups:
+      - sidecar
+    published_ports:
+      - 6379:6379
+
   - name: rockylinux8
     image: "geerlingguy/docker-rockylinux8-ansible:latest"
     command: ${MOLECULE_DOCKER_COMMAND:-""}

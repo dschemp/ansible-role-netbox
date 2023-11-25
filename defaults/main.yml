@@ -1,2 +1,68 @@
 ---
-# defaults file for netbox
+netbox_version: "3.6.5"
+netbox_url: "https://github.com/netbox-community/netbox/archive/refs/tags/v{{ netbox_version }}.tar.gz"
+
+netbox_path: "/opt/netbox"
+
+netbox_user: "netbox"
+netbox_group: "netbox"
+
+netbox_listen_address: "0.0.0.0:8000"
+
+## --- Required Netbox settings ---
+
+netbox_secret_key: ""
+
+## Example:
+# netbox_allowed_hosts: ['netbox.example.com', 'netbox.internal.local']
+# netbox_allowed_hosts: ['*']
+netbox_allowed_hosts: ["*"]
+
+netbox_db_host: "localhost"
+netbox_db_port: 5432
+netbox_db_name: "netbox"
+netbox_db_username: "netbox"
+netbox_db_password: "netbox"
+netbox_db_connection_max_age: 300
+
+netbox_redis_tasks_host: "localhost"
+netbox_redis_tasks_port: 6379
+netbox_redis_tasks_username: ""
+netbox_redis_tasks_password: ""
+netbox_redis_tasks_database: 0
+
+netbox_redis_caching_host: "{{ netbox_redis_tasks_host }}"
+netbox_redis_caching_port: "{{ netbox_redis_tasks_port }}"
+netbox_redis_caching_username: "{{ netbox_redis_tasks_username }}"
+netbox_redis_caching_password: "{{ netbox_redis_tasks_password }}"
+netbox_redis_caching_database: "{{ netbox_redis_tasks_database | int + 1 }}"
+
+## --- Optional Netbox settings ---
+
+netbox_admins: []
+# netbox_admins:
+#   - name: John Doe
+#     email: jdoe@example.com
+
+netbox_url_base_path: ""
+
+netbox_debug_mode_enabled: false
+
+netbox_default_language: "en-us"
+
+netbox_email_host: "localhost"
+netbox_email_port: 25
+netbox_email_username: ""
+netbox_email_password: ""
+netbox_email_use_ssl: false
+netbox_email_use_tls: false
+netbox_email_timeout: 10
+netbox_email_from_email: ""
+
+netbox_require_login: true
+
+netbox_metrics_enabled: false
+
+netbox_check_for_updates: false
+
+netbox_timezone: "UTC"

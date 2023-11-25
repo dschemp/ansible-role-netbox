@@ -1,0 +1,18 @@
+---
+- name: "Create system group."
+  become: true
+  ansible.builtin.group:
+    name: "{{ netbox_group }}"
+    system: true
+    state: "present"
+
+- name: "Create system user."
+  become: true
+  ansible.builtin.user:
+    name: "{{ netbox_user }}"
+    group: "{{ netbox_group }}"
+    system: true
+    create_home: true
+    home: "{{ netbox_path }}"
+    shell: "/sbin/nologin"
+    state: "present"

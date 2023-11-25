@@ -1,0 +1,25 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Netbox is an IPAM management platform.
+Wants=network-online.target
+After=network-online.target
+After=postgresql.service redis-server.service
+
+[Service]
+User={{ netbox_user }}
+Group={{ netbox_group }}
+Type=notify
+Restart=on-failure
+
+## Prepare environment
+# ExecPreStart=
+## Run Netbox
+# ExecStart=
+## Shutdown Netbox
+# ExecStop=
+## Deactive environment
+# ExecPostStop=
+
+[Install]
+WantedBy=multi-user.target
