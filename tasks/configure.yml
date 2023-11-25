@@ -1,4 +1,38 @@
 ---
+- name: "Generate a secret key if not provided by user."
+  when: "netbox_secret_key is undefined"
+  become: true
+  become_user: "{{ netbox_user }}"
+  block:
+    - name: "Check if keyfile exists."
+      ansible.builtin.stat:
+        path: "{{ netbox_secret_key_path }}"
+      register: "__netbox_secret_key_stat"
+
+    - name: "Generate secret key."
+      when: "not __netbox_secret_key_stat.stat.exists"
+      ansible.builtin.command:
+        cmd: "{{ netbox_python_path }} {{ netbox_path }}/netbox/generate_secret_key.py"
+      changed_when: false
+      register: "__netbox_secret_key_generated"
+
+    - name: "Store secret key in keyfile."
+      when: "not __netbox_secret_key_stat.stat.exists"
+      ansible.builtin.copy:
+        content: |
+          {{ __netbox_secret_key_generated.stdout }}
+        dest: "{{ netbox_secret_key_path }}"
+        mode: "0400"
+
+    - name: "Read secret key."
+      ansible.builtin.slurp:
+        path: "{{ netbox_secret_key_path }}"
+      register: "__netbox_secret_key_slurp"
+
+    - name: "Set secret key fact."
+      ansible.builtin.set_fact:
+        netbox_secret_key: "{{ __netbox_secret_key_slurp.content | b64decode | trim }}"
+
 - name: "Copy configuration."
   become: true
   ansible.builtin.template:
