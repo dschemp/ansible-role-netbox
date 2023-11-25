@@ -11,6 +11,15 @@ netbox_listen_address: "127.0.0.1:8001"
 
 netbox_python_path: "python3"
 
+# If no password is supplied, the user is created but is unable to login until a password is set.
+netbox_superusers: []
+# netbox_superusers:
+#   - username: "f_admin"
+#     email: "admin@example.org"
+#   - username: "f_automation"
+#     email: "automation@example.org"
+#     password: "automation4life123!"
+
 ## --- Required Netbox settings ---
 
 netbox_secret_key: "{{ undef(hint='A secret key must be defined. It should exceed 50 chars in length.') }}"
@@ -62,7 +71,9 @@ netbox_email_use_tls: false
 netbox_email_timeout: 10
 netbox_email_from_email: ""
 
-netbox_require_login: false
+netbox_login_required: true
+netbox_login_session_persist: false
+netbox_login_session_timeout: 1209600
 
 netbox_metrics_enabled: false
 
@@ -71,6 +82,15 @@ netbox_check_for_updates: false
 netbox_timezone: "UTC"
 
 netbox_census_reporting_enabled: true
+
+## Maintenance
+netbox_maintenance_mode_enabled: false
+
+## Banner
+# netbox_banner_bottom: ""
+# netbox_banner_top: ""
+# netbox_banner_login: ""
+# netbox_banner_maintenance: ""
 
 # Gunicorn WSGI configuration
 netbox_gunicorn_workers: 5

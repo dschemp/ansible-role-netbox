@@ -10,3 +10,6 @@
 
 - name: "Import systemd tasks."
   ansible.builtin.import_tasks: "systemd.yml"
+
+- name: "Import populate tasks."
+  ansible.builtin.import_tasks: "populate.yml"

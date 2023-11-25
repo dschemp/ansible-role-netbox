@@ -176,15 +176,15 @@ LOGGING = {
 
 # Automatically reset the lifetime of a valid session upon each authenticated request. Enables users to remain
 # authenticated to NetBox indefinitely.
-LOGIN_PERSISTENCE = False
+LOGIN_PERSISTENCE = {{ netbox_login_session_persist | bool }}
 
 # Setting this to True will permit only authenticated users to access any part of NetBox. By default, anonymous users
 # are permitted to access most data in NetBox but not make any changes.
-LOGIN_REQUIRED = {{ netbox_require_login | bool }}
+LOGIN_REQUIRED = {{ netbox_login_required | bool }}
 
 # The length of time (in seconds) for which a user will remain logged into the web UI before being prompted to
 # re-authenticate. (Default: 1209600 [14 days])
-LOGIN_TIMEOUT = None
+LOGIN_TIMEOUT = {{ netbox_login_session_timeout | int }}
 
 # The view name or URL to which users are redirected after logging out.
 LOGOUT_REDIRECT_URL = "home"
@@ -221,7 +221,7 @@ REMOTE_AUTH_DEFAULT_PERMISSIONS = {}
 
 # This repository is used to check whether there is a new release of NetBox available. Set to None to disable the
 # version check or use the URL below to check for release in the official NetBox repository.
-{% if netbox_check_for_updates %}
+{% if netbox_check_for_updates | bool %}
 RELEASE_CHECK_URL = "https://api.github.com/repos/netbox-community/netbox/releases"
 {% else %}
 RELEASE_CHECK_URL = None
@@ -269,3 +269,18 @@ DATETIME_FORMAT       = "N j, Y g:i a"
 SHORT_DATETIME_FORMAT = "Y-m-d H:i"
 
 CENSUS_REPORTING_ENABLED = {{ netbox_census_reporting_enabled | bool }}
+
+MAINTENANCE_MODE = {{ netbox_maintenance_mode_enabled | bool }}
+
+{% if netbox_banner_bottom is defined %}
+BANNER_BOTTOM = "{{ netbox_banner_bottom }}"
+{% endif %}
+{% if netbox_banner_top is defined %}
+BANNER_TOP = "{{ netbox_banner_top }}"
+{% endif %}
+{% if netbox_banner_login is defined %}
+BANNER_LOGIN = "{{ netbox_banner_login }}"
+{% endif %}
+{% if netbox_banner_maintenance is defined %}
+BANNER_MAINTENANCE = "{{ netbox_banner_maintenance }}"
+{% endif %}

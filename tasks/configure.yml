@@ -7,6 +7,7 @@
     owner: "{{ netbox_user }}"
     group: "{{ netbox_group }}"
     mode: "0440"
+  register: "__netbox_copy_configuration"
 
 - name: "Copy gunicorn configuration."
   become: true
@@ -16,10 +17,16 @@
     owner: "{{ netbox_user }}"
     group: "{{ netbox_group }}"
     mode: "0440"
+  register: "__netbox_copy_gunicorn_configuration"
 
 - name: "Run upgrade script."
   become: true
   become_user: "{{ netbox_user }}"
+  when: >
+    __netbox_install_application.changed or
+    __netbox_copy_configuration.changed or
+    __netbox_copy_gunicorn_configuration.changed or
+    netbox_force_upgrade_script
   environment:
     PYTHON: "{{ netbox_python_path }}"
   ansible.builtin.command:

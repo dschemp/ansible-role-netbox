@@ -22,3 +22,7 @@
             email: "john.doesnt@example.com"
         netbox_census_reporting_enabled: false
         netbox_listen_address: "0.0.0.0:8001"
+        netbox_superusers:
+          - username: "f_admin"
+            email: "admin@example.org"
+            password: "admin4life123!"

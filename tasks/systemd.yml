@@ -18,14 +18,21 @@
       dest: "{{ netbox_rq_service_name }}.service"
   loop_control:
     label: "{{ item.dest }}"
+  register: "__netbox_copy_services"
 
 - name: "Enable and start services and timer."
   become: true
+  vars:
+    __netbox_restart_required: >
+      {{ (__netbox_install_application.changed or
+      __netbox_copy_configuration.changed or
+      __netbox_copy_gunicorn_configuration.changed or
+      __netbox_copy_services.changed) | bool }}
   ansible.builtin.systemd_service:
     name: "{{ item }}"
     daemon_reload: true
     enabled: true
-    state: "restarted"
+    state: "{{ __netbox_restart_required | ternary('restarted', 'started') }}"
   loop:
     - "{{ netbox_service_name }}.service"
     - "{{ netbox_housekeeping_service_name }}.timer"
