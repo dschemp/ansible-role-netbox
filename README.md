@@ -1,4 +1,4 @@
-ansible-role-netbox
+Ansible Role: netbox
 =========
 
 An Ansible role for deploying Netbox.
