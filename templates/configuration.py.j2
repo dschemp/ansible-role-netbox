@@ -48,7 +48,7 @@ BANNER_LOGIN = "{{ netbox_banner_login }}"
 BANNER_MAINTENANCE = "{{ netbox_banner_maintenance }}"
 {% endif -%}
 
-LOGGING = {{ __netbox_logging | to_nice_json | replace('false', 'False') | replace('true', 'True') }}
+LOGGING = {{ __netbox_logging | to_nice_json | replace(': false', ': False') | replace(': true', ': True') }}
 
 # ---------------------
 # Plugins configuration
@@ -59,7 +59,7 @@ PLUGINS = {{ netbox_plugins | to_nice_json }}
 {% endif -%}
 
 {% if netbox_plugins_configuration is defined %}
-PLUGINS_CONFIG = {{ netbox_plugins_configuration | default({}) | to_nice_json | replace('false', 'False') | replace('true', 'True') }}
+PLUGINS_CONFIG = {{ netbox_plugins_configuration | default({}) | to_nice_json | replace(': false', ': False') | replace(': true', ': True') }}
 {% endif -%}
 
 # ----------------------
@@ -106,19 +106,19 @@ HTTP_PROXIES = {{ __netbox_proxy | to_nice_json }}
 # Database configuration
 # ----------------------
 
-DATABASE = {{ __netbox_db | to_nice_json | replace('false', 'False') | replace('true', 'True') }}
+DATABASE = {{ __netbox_db | to_nice_json | replace(': false', ': False') | replace(': true', ': True') }}
 
 # -------------------
 # Redis configuration
 # -------------------
 
-REDIS = {{ __netbox_redis | to_nice_json | replace('false', 'False') | replace('true', 'True') }}
+REDIS = {{ __netbox_redis | to_nice_json | replace(': false', ': False') | replace(': true', ': True') }}
 
 # -------------------
 # Email configuration
 # -------------------
 
-EMAIL = {{ __netbox_email | to_nice_json | replace('false', 'False') | replace('true', 'True') }}
+EMAIL = {{ __netbox_email | to_nice_json | replace(': false', ': False') | replace(': true', ': True') }}
 
 # ------------------
 # User configuration
