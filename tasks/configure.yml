@@ -63,6 +63,7 @@
     netbox_force_upgrade_script
   environment:
     PYTHON: "{{ netbox_python_path }}"
+    PIP_QUIET: "true"
   ansible.builtin.command:
     cmd: "{{ netbox_path }}/upgrade.sh"
   register: "__netbox_upgrade_script"
