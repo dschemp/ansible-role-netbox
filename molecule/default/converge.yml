@@ -25,3 +25,4 @@
           - username: "f_admin"
             email: "admin@example.org"
             password: "admin4life123!"
+        netbox_user_shell: "/bin/bash"

@@ -22,8 +22,7 @@
     group: "{{ netbox_group }}"
     system: true
     home: "{{ netbox_path }}"
-    # shell: "/sbin/nologin"
-    shell: "/bin/bash"
+    shell: "{{ netbox_user_shell }}"
     state: "present"
 
 - name: "Create application dir."
