@@ -26,3 +26,5 @@
             email: "admin@example.org"
             password: "admin4life123!"
         netbox_user_shell: "/bin/bash"
+        netbox_python_requirements: ["netbox-plugin-dns"]
+        netbox_plugins: ["netbox_dns"]

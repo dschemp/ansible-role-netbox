@@ -17,6 +17,9 @@ netbox_group: "netbox"
 ## Like "/usr/bin/python3.8"
 netbox_python_path: "python3"
 
+## List of additional local Python requirements to install in the Netbox venv.
+# netbox_python_requirements: []
+
 ##
 ## ATTENTION!
 ## Commented variables use the default values as defined by Netbox, not Ansible!
