@@ -1,6 +1,11 @@
 ---
+## Set specific version like "3.6.5" or use "latest" for the latest release.
+## The latest release will be determined by the latest release in GitHub.
 netbox_version: "3.6.5"
-netbox_url: "https://github.com/netbox-community/netbox/archive/refs/tags/v{{ netbox_version }}.tar.gz"
+## Set the url to the Netbox release tarball.
+## If set, the Netbox version above will not be set.
+## If not set, the GitHub release will be used.
+# netbox_url: "https://github.com/netbox-community/netbox/archive/refs/tags/v{{ netbox_version }}.tar.gz"
 
 netbox_path: "/opt/netbox"
 

@@ -32,3 +32,22 @@
     owner: "{{ netbox_user }}"
     group: "{{ netbox_group }}"
     mode: "0755"
+
+- name: "Retrieve latest Netbox version."
+  when:
+    - "netbox_version == 'latest'"
+    - "netbox_url is not defined"
+  block:
+    - name: "Get latest release info from GitHub."
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/netbox-community/netbox/releases/latest
+      register: "__netbox_latest_release"
+
+    - name: "Set application version."
+      ansible.builtin.set_fact:
+        netbox_version: "{{ __netbox_latest_release.json.tag_name | replace('v', '') }}"
+
+- name: "Set archive url."
+  when: "netbox_url is undefined"
+  ansible.builtin.set_fact:
+    netbox_url: "https://github.com/netbox-community/netbox/archive/refs/tags/v{{ netbox_version }}.tar.gz"
