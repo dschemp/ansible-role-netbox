@@ -3,10 +3,15 @@
   hosts: "all,!sidecar"
   become: true
   tasks:
-    - name: "Install Python 3.8."
-      when: "ansible_hostname == 'rockylinux8'"
+    - name: "Install Python 3.11."
+      when:
+        - "ansible_os_family == 'RedHat'"
+        - "ansible_distribution_major_version == '8'"
       ansible.builtin.dnf:
-        name: "python38"
+        name:
+          - "python3.11"
+          - "python3.11-pip"
+          - "python3.11-devel"
         update_cache: true
         state: "present"
 

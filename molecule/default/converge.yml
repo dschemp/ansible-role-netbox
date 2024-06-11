@@ -3,9 +3,11 @@
   hosts: "all,!sidecar"
   pre_tasks:
     - name: "Set Python path."
-      when: "ansible_hostname == 'rockylinux8'"
+      when:
+        - "ansible_os_family == 'RedHat'"
+        - "ansible_distribution_major_version == '8'"
       ansible.builtin.set_fact:
-        netbox_python_path: "/usr/bin/python3.8"
+        netbox_python_path: "/usr/bin/python3.11"
 
   roles:
     - role: "dschemp.netbox"
@@ -26,5 +28,6 @@
             email: "admin@example.org"
             password: "admin4life123!"
         netbox_user_shell: "/bin/bash"
-        netbox_python_requirements: ["netbox-plugin-dns"]
+        netbox_python_requirements: ["netbox-plugin-dns", "bleach"]
         netbox_plugins: ["netbox_dns"]
+        netbox_force_upgrade_script: true

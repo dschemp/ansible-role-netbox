@@ -1,0 +1,25 @@
+---
+- name: "Run upgrade script."
+  become: true
+  become_user: "{{ netbox_user }}"
+  environment:
+    PYTHON: "{{ netbox_python_path }}"
+    PIP_QUIET: "true"
+  ansible.builtin.command:
+    cmd: "{{ netbox_path }}/upgrade.sh"
+  register: "__netbox_upgrade_script"
+  # TODO: changed_when.
+  # How do we detect a run, where something has changed besides DB migrations.
+  changed_when: "'No migrations to apply.' not in __netbox_upgrade_script.stdout"
+
+- name: "Restart services."
+  ansible.builtin.set_fact:
+    netbox_restart_services: true
+  # become: true
+  # ansible.builtin.systemd_service:
+  #   name: "{{ item }}"
+  #   state: "restarted"
+  # loop:
+  #   - "{{ netbox_service_name }}.service"
+  #   - "{{ netbox_housekeeping_service_name }}.timer"
+  #   - "{{ netbox_rq_service_name }}.service"

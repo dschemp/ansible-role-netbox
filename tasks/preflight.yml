@@ -1,5 +1,26 @@
 ---
-- name: "Check if installed Python3 version is 3.8+."
+- name: "Retrieve latest Netbox version."
+  when:
+    - "netbox_version == 'latest'"
+    - "netbox_url is not defined"
+  block:
+    - name: "Get latest release info from GitHub."
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/netbox-community/netbox/releases/latest
+      register: "__netbox_latest_release"
+
+    - name: "Set application version."
+      ansible.builtin.set_fact:
+        netbox_version: "{{ __netbox_latest_release.json.tag_name | replace('v', '') }}"
+
+    - name: "Debug Netbox version."
+      ansible.builtin.debug:
+        var: "netbox_version"
+
+- name: "Require Python 3.8+ (Netbox 3.2+)."
+  when:
+    - "netbox_version is version('3.2', '>=')"
+    - "netbox_version is version('4.0', '<')"
   ansible.builtin.command:
     cmd: "{{ netbox_python_path }} --version"
   register: "__netbox_python_version"
@@ -7,6 +28,21 @@
   failed_when: >
     __netbox_python_version.rc != 0 or
     __netbox_python_version.stdout | replace('Python ', '') is version('3.8', '<')
+
+- name: "Require Python 3.10+ (Netbox 4.0+)."
+  when: "netbox_version is version('4.0', '>=')"
+  ansible.builtin.command:
+    cmd: "{{ netbox_python_path }} --version"
+  register: "__netbox_python_version"
+  changed_when: false
+  failed_when: >
+    __netbox_python_version.rc != 0 or
+    __netbox_python_version.stdout | replace('Python ', '') is version('3.10', '<')
+
+- name: "Set archive url."
+  when: "netbox_url is undefined"
+  ansible.builtin.set_fact:
+    netbox_url: "https://github.com/netbox-community/netbox/archive/refs/tags/v{{ netbox_version }}.tar.gz"
 
 - name: "Create system group."
   become: true
@@ -33,21 +69,4 @@
     group: "{{ netbox_group }}"
     mode: "0755"
 
-- name: "Retrieve latest Netbox version."
-  when:
-    - "netbox_version == 'latest'"
-    - "netbox_url is not defined"
-  block:
-    - name: "Get latest release info from GitHub."
-      ansible.builtin.uri:
-        url: https://api.github.com/repos/netbox-community/netbox/releases/latest
-      register: "__netbox_latest_release"
-
-    - name: "Set application version."
-      ansible.builtin.set_fact:
-        netbox_version: "{{ __netbox_latest_release.json.tag_name | replace('v', '') }}"
-
-- name: "Set archive url."
-  when: "netbox_url is undefined"
-  ansible.builtin.set_fact:
-    netbox_url: "https://github.com/netbox-community/netbox/archive/refs/tags/v{{ netbox_version }}.tar.gz"
+# TODO: check if services already exists and consequently stop them

@@ -1,0 +1,9 @@
+---
+netbox_system_packages:
+  - "gcc"
+  - "libxml2-devel"
+  - "libxslt-devel"
+  - "libffi-devel"
+  - "libpq-devel"
+  - "openssl-devel"
+  - "redhat-rpm-config"

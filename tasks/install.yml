@@ -1,4 +1,10 @@
 ---
+- name: "Install system dependencies."
+  become: true
+  ansible.builtin.package:
+    name: "{{ netbox_system_packages }}"
+    state: "present"
+
 - name: "Download and extract archive."
   become: true
   ansible.builtin.unarchive:
@@ -18,4 +24,6 @@
     group: "{{ netbox_group }}"
     mode: "0755"
     remote_src: true
-  register: "__netbox_install_application"
+  notify:
+    - "Run upgrade script."
+    - "Restart services."
