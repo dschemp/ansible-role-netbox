@@ -1,8 +1,6 @@
 ---
 - name: "Retrieve latest Netbox version."
-  when:
-    - "netbox_version == 'latest'"
-    - "netbox_url is not defined"
+  when: "netbox_version == 'latest'"
   block:
     - name: "Get latest release info from GitHub."
       ansible.builtin.uri:
@@ -13,7 +11,7 @@
       ansible.builtin.set_fact:
         netbox_version: "{{ __netbox_latest_release.json.tag_name | replace('v', '') }}"
 
-    - name: "Debug Netbox version."
+    - name: "Debug latest Netbox version."
       ansible.builtin.debug:
         var: "netbox_version"
 
@@ -39,8 +37,42 @@
     __netbox_python_version.rc != 0 or
     __netbox_python_version.stdout | replace('Python ', '') is version('3.10', '<')
 
+- name: "Check if Netbox is already installed."
+  become: true
+  ansible.builtin.stat:
+    path: "{{ netbox_path }}/netbox/netbox/settings.py"
+  register: "netbox_settings_py_stat"
+
+- name: "Get currently installed version."
+  when: "netbox_settings_py_stat.stat.exists"
+  block:
+    - name: "Get currently installed Netbox version."
+      become: true
+      ansible.builtin.command:
+        cmd: "grep '^VERSION' {{ netbox_path }}/netbox/netbox/settings.py"
+      changed_when: false
+      register: "netbox_version_command"
+
+    - name: "Set installed Netbox version variable."
+      ansible.builtin.set_fact:
+        netbox_installed_version: "{{ netbox_version_command.stdout | regex_search('\\d+\\.\\d+\\.\\d+') | trim }}"
+
+    - name: "Debug currently installed Netbox version."
+      ansible.builtin.debug:
+        var: "netbox_installed_version"
+        verbosity: 1
+
+# In case there is Netbox is not installed we just use the target version for comparison.
+- name: "Check if an upgrade is necessary."
+  ansible.builtin.set_fact:
+    netbox_upgrade_needed: "{{ netbox_installed_version | default(netbox_version) is version(netbox_version, '<') }}"
+
+- name: "Debug upgrade needed."
+  ansible.builtin.debug:
+    var: "netbox_upgrade_needed"
+    verbosity: 1
+
 - name: "Set archive url."
-  when: "netbox_url is undefined"
   ansible.builtin.set_fact:
     netbox_url: "https://github.com/netbox-community/netbox/archive/refs/tags/v{{ netbox_version }}.tar.gz"
 
@@ -60,13 +92,3 @@
     home: "{{ netbox_path }}"
     shell: "{{ netbox_user_shell }}"
     state: "present"
-
-- name: "Create application dir."
-  become: true
-  ansible.builtin.file:
-    path: "{{ netbox_path }}"
-    owner: "{{ netbox_user }}"
-    group: "{{ netbox_group }}"
-    mode: "0755"
-
-# TODO: check if services already exists and consequently stop them

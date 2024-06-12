@@ -16,7 +16,6 @@
         email: "admin@example.org"
         password: "admin4life123!"
     netbox_census_reporting_enabled: false
-    netbox_python_requirements: ["netbox-plugin-dns", "bleach"]
     netbox_plugins: ["netbox_dns"]
     netbox_user_shell: "/bin/bash" # Used for testing
   pre_tasks:
@@ -29,3 +28,23 @@
   roles:
     - role: "dschemp.netbox"
       become: true
+      vars:
+        netbox_version: "3.7.8"
+        netbox_python_requirements: ["netbox-plugin-dns==0.22.*", "bleach"]
+
+- name: "Converge (upgrade)."
+  hosts: "all,!sidecar"
+  vars:
+    netbox_listen_address: "0.0.0.0:8001"
+    netbox_db_host: "postgres"
+    netbox_db_password: "netbox123!"
+    netbox_redis_tasks_host: "redis"
+    netbox_census_reporting_enabled: false
+    netbox_plugins: ["netbox_dns"]
+    netbox_user_shell: "/bin/bash" # Used for testing
+  roles:
+    - role: "dschemp.netbox"
+      become: true
+      vars:
+        netbox_version: "latest"
+        netbox_python_requirements: ["netbox-plugin-dns", "bleach"]

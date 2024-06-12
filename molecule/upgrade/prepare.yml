@@ -1,0 +1,38 @@
+---
+- name: "Prepare."
+  hosts: "all,!sidecar"
+  become: true
+  tasks:
+    - name: "Install Python 3.11."
+      when:
+        - "ansible_os_family == 'RedHat'"
+        - "ansible_distribution_major_version == '8'"
+      ansible.builtin.dnf:
+        name:
+          - "python3.11"
+          - "python3.11-pip"
+          - "python3.11-devel"
+        update_cache: true
+        state: "present"
+
+    - name: "Install nginx."
+      ansible.builtin.package:
+        name: "nginx"
+        state: "present"
+
+    - name: "Copy nginx configuration for Netbox."
+      ansible.builtin.copy:
+        src: "nginx.conf"
+        dest: "/etc/nginx/conf.d/netbox.conf"
+        mode: "0644"
+
+    # - name: "Enable nginx configuration for Netbox."
+    #   ansible.builtin.file:
+    #     src: "/etc/nginx/sites-available/netbox"
+    #     dest: "/etc/nginx/sites-enabled/netbox"
+    #     state: "link"
+
+    - name: "Restart nginx."
+      ansible.builtin.service:
+        name: "nginx"
+        state: "restarted"
