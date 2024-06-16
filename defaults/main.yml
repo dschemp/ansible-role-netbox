@@ -226,7 +226,7 @@ netbox_email_from_email: ""
 
 ## Number of gunicorn workers to spawn.
 ## This should typically be 2n+1, where n is the number of CPU cores present.
-netbox_gunicorn_workers: "{{ (ansible_processor_vcpus * 2) + 1 }}"
+netbox_gunicorn_workers: "{{ (ansible_facts['processor_vcpus'] * 2) + 1 }}"
 ## Number of threads per worker process
 netbox_gunicorn_threads: 5
 ## Timeout (in seconds) for a request to complete
