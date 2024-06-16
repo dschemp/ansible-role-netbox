@@ -1,16 +1,6 @@
 ---
-- name: "Load OS-specific vars."
-  ansible.builtin.include_vars: "{{ lookup('ansible.builtin.first_found', params) }}"
-  vars:
-    params:
-      files:
-        - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
-        - "{{ ansible_distribution }}.yml"
-        - "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
-        - "{{ ansible_os_family }}.yml"
-        - "main.yml"
-      paths:
-        - "vars"
+- name: "Import preflight tasks."
+  ansible.builtin.import_tasks: "set_vars.yml"
 
 - name: "Import preflight tasks."
   ansible.builtin.import_tasks: "preflight.yml"
