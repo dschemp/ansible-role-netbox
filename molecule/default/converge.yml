@@ -23,7 +23,7 @@
     - name: "Set Python path."
       when:
         - "ansible_os_family == 'RedHat'"
-        - "ansible_distribution_major_version == '8'"
+        - "ansible_distribution_major_version in ['8', '9']"
       ansible.builtin.set_fact:
         netbox_python_path: "/usr/bin/python3.11"
   roles:

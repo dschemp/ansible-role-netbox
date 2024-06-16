@@ -33,8 +33,8 @@ platforms:
     networks:
       - name: molecule
 
-  - name: rockylinux8
-    image: "geerlingguy/docker-rockylinux8-ansible:latest"
+  - name: instance
+    image: "geerlingguy/docker-${MOLECULE_DOCKER_IMAGE:-rockylinux8}-ansible:latest"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
@@ -45,46 +45,6 @@ platforms:
       - 8000:8000
     networks:
       - name: molecule
-  # - name: rockylinux9
-  #   image: "geerlingguy/docker-rockylinux9-ansible:latest"
-  #   command: ${MOLECULE_DOCKER_COMMAND:-""}
-  #   volumes:
-  #     - /sys/fs/cgroup:/sys/fs/cgroup:rw
-  #   cgroupns_mode: host
-  #   privileged: true
-  #   pre_build_image: true
-  #   networks:
-  #     - name: molecule
-  # - name: ubuntu2204
-  #   image: "geerlingguy/docker-ubuntu2204-ansible:latest"
-  #   command: ${MOLECULE_DOCKER_COMMAND:-""}
-  #   volumes:
-  #     - /sys/fs/cgroup:/sys/fs/cgroup:rw
-  #   cgroupns_mode: host
-  #   privileged: true
-  #   pre_build_image: true
-  #   networks:
-  #     - name: molecule
-  # - name: ubuntu2004
-  #   image: "geerlingguy/docker-ubuntu2004-ansible:latest"
-  #   command: ${MOLECULE_DOCKER_COMMAND:-""}
-  #   volumes:
-  #     - /sys/fs/cgroup:/sys/fs/cgroup:rw
-  #   cgroupns_mode: host
-  #   privileged: true
-  #   pre_build_image: true
-  #   networks:
-  #     - name: molecule
-  # - name: debian12
-  #   image: "geerlingguy/docker-debian12-ansible:latest"
-  #   command: ${MOLECULE_DOCKER_COMMAND:-""}
-  #   volumes:
-  #     - /sys/fs/cgroup:/sys/fs/cgroup:rw
-  #   cgroupns_mode: host
-  #   privileged: true
-  #   pre_build_image: true
-  #   networks:
-  #     - name: molecule
 
 provisioner:
   name: ansible

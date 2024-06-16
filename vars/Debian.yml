@@ -1,0 +1,10 @@
+---
+__netbox_system_packages:
+  - "python3-venv"
+  - "build-essential"
+  - "libxml2-dev"
+  - "libxslt1-dev"
+  - "libffi-dev"
+  - "libpq-dev"
+  - "libssl-dev"
+  - "zlib1g-dev"
