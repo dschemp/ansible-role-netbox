@@ -8,7 +8,7 @@
 - name: "Download and extract archive."
   become: true
   ansible.builtin.unarchive:
-    src: "{{ netbox_url }}"
+    src: "{{ __netbox_url }}"
     dest: "/var/tmp"
     owner: "{{ netbox_user }}"
     group: "{{ netbox_group }}"
@@ -16,7 +16,7 @@
     remote_src: true
 
 - name: "Perform upgrade."
-  when: "netbox_upgrade_needed | default(false) | bool"
+  when: "__netbox_upgrade_needed | default(false) | bool"
   become: true
   block:
     - name: "Stop services."
@@ -38,7 +38,7 @@
           - "reports"
           - "secret.key"
         file_type: "any"
-      register: "netbox_backup_files_dirs"
+      register: "__netbox_backup_files_dirs"
 
     - name: "Backup files and dirs for upgrade."
       ansible.builtin.copy:
@@ -48,7 +48,7 @@
         group: "{{ netbox_group }}"
         mode: "preserve"
         remote_src: true
-      loop: "{{ netbox_backup_files_dirs.files }}"
+      loop: "{{ __netbox_backup_files_dirs.files }}"
       loop_control:
         label: "{{ item.path }}"
 

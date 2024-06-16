@@ -30,7 +30,7 @@
       become: true
       vars:
         netbox_version: "3.7.8"
-        netbox_python_requirements: ["netbox-plugin-dns==0.22.*", "bleach"]
+        netbox_additional_python_requirements: ["netbox-plugin-dns==0.22.*", "bleach"]
 
 - name: "Converge (upgrade)."
   hosts: "all,!sidecar"
@@ -47,4 +47,4 @@
       become: true
       vars:
         netbox_version: "latest"
-        netbox_python_requirements: ["netbox-plugin-dns", "bleach"]
+        netbox_additional_python_requirements: ["netbox-plugin-dns", "bleach"]

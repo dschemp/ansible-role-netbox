@@ -3,14 +3,11 @@ netbox_service_name: "netbox"
 netbox_housekeeping_service_name: "{{ netbox_service_name }}-housekeeping"
 netbox_rq_service_name: "{{ netbox_service_name }}-rq"
 
-netbox_system_packages: []
-
 ## Can be set to any other shell for testing purposes.
 ## Should not be changed for production deployments.
 netbox_user_shell: "/sbin/nologin"
 
-netbox_force_upgrade_script: false
-netbox_secret_key_path: "{{ netbox_path }}/secret.key"
+__netbox_secret_key_path: "{{ netbox_path }}/secret.key"
 
 __netbox_db:
   ENGINE: "django.db.backends.postgresql"

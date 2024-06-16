@@ -6,7 +6,7 @@
   block:
     - name: "Check if keyfile exists."
       ansible.builtin.stat:
-        path: "{{ netbox_secret_key_path }}"
+        path: "{{ __netbox_secret_key_path }}"
       register: "__netbox_secret_key_stat"
 
     - name: "Generate secret key."
@@ -21,12 +21,12 @@
       ansible.builtin.copy:
         content: |
           {{ __netbox_secret_key_generated.stdout }}
-        dest: "{{ netbox_secret_key_path }}"
+        dest: "{{ __netbox_secret_key_path }}"
         mode: "0400"
 
     - name: "Read secret key."
       ansible.builtin.slurp:
-        path: "{{ netbox_secret_key_path }}"
+        path: "{{ __netbox_secret_key_path }}"
       register: "__netbox_secret_key_slurp"
 
     - name: "Set secret key fact."
@@ -61,7 +61,7 @@
   become: true
   ansible.builtin.copy:
     content: |
-      {% for line in netbox_python_requirements | default([]) %}
+      {% for line in netbox_additional_python_requirements %}
       {{ line }}
       {% endfor %}
     dest: "{{ netbox_path }}/local_requirements.txt"

@@ -14,10 +14,10 @@
   ansible.builtin.import_tasks: "preflight.yml"
 
 - name: "Import installation tasks."
-  ansible.builtin.import_tasks: "install.yml"
+  ansible.builtin.import_tasks: "setup.yml"
 
 - name: "Import configuration tasks."
-  ansible.builtin.import_tasks: "configure.yml"
+  ansible.builtin.include_tasks: "configure-{{ ansible_os_family }}.yml"
 
 - name: "Import systemd tasks."
   ansible.builtin.import_tasks: "systemd.yml"

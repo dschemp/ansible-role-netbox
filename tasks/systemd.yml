@@ -18,7 +18,6 @@
       dest: "{{ netbox_rq_service_name }}.service"
   loop_control:
     label: "{{ item.dest }}"
-  register: "__netbox_copy_services"
 
 - name: "Setup services."
   become: true

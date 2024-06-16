@@ -14,7 +14,7 @@ netbox_group: "netbox"
 netbox_python_path: "python3"
 
 ## List of additional local Python requirements to install in the Netbox venv.
-# netbox_python_requirements: []
+netbox_additional_python_requirements: []
 
 ##
 ## ATTENTION!

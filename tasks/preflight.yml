@@ -41,40 +41,40 @@
   become: true
   ansible.builtin.stat:
     path: "{{ netbox_path }}/netbox/netbox/settings.py"
-  register: "netbox_settings_py_stat"
+  register: "__netbox_settings_py_stat"
 
 - name: "Get currently installed version."
-  when: "netbox_settings_py_stat.stat.exists"
+  when: "__netbox_settings_py_stat.stat.exists"
   block:
     - name: "Get currently installed Netbox version."
       become: true
       ansible.builtin.command:
         cmd: "grep '^VERSION' {{ netbox_path }}/netbox/netbox/settings.py"
       changed_when: false
-      register: "netbox_version_command"
+      register: "__netbox_version_command"
 
     - name: "Set installed Netbox version variable."
       ansible.builtin.set_fact:
-        netbox_installed_version: "{{ netbox_version_command.stdout | regex_search('\\d+\\.\\d+\\.\\d+') | trim }}"
+        __netbox_installed_version: "{{ __netbox_version_command.stdout | regex_search('\\d+\\.\\d+\\.\\d+') | trim }}"
 
     - name: "Debug currently installed Netbox version."
       ansible.builtin.debug:
-        var: "netbox_installed_version"
+        msg: "{{ __netbox_installed_version }}"
         verbosity: 1
 
 # In case there is Netbox is not installed we just use the target version for comparison.
 - name: "Check if an upgrade is necessary."
   ansible.builtin.set_fact:
-    netbox_upgrade_needed: "{{ netbox_installed_version | default(netbox_version) is version(netbox_version, '<') }}"
+    __netbox_upgrade_needed: "{{ __netbox_installed_version | default(netbox_version) is version(netbox_version, '<') }}"
 
 - name: "Debug upgrade needed."
   ansible.builtin.debug:
-    var: "netbox_upgrade_needed"
+    msg: "{{ __netbox_upgrade_needed }}"
     verbosity: 1
 
 - name: "Set archive url."
   ansible.builtin.set_fact:
-    netbox_url: "https://github.com/netbox-community/netbox/archive/refs/tags/v{{ netbox_version }}.tar.gz"
+    __netbox_url: "https://github.com/netbox-community/netbox/archive/refs/tags/v{{ netbox_version }}.tar.gz"
 
 - name: "Create system group."
   become: true
@@ -92,3 +92,8 @@
     home: "{{ netbox_path }}"
     shell: "{{ netbox_user_shell }}"
     state: "present"
+
+- name: "Define netbox_system_packages."
+  when: "netbox_system_packages is not defined"
+  ansible.builtin.set_fact:
+    netbox_system_packages: "{{ __netbox_system_packages | list }}"

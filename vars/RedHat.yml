@@ -1,5 +1,5 @@
 ---
-netbox_system_packages:
+__netbox_system_packages:
   - "gcc"
   - "libxml2-devel"
   - "libxslt-devel"

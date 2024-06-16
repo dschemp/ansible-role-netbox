@@ -16,7 +16,7 @@
         email: "admin@example.org"
         password: "admin4life123!"
     netbox_census_reporting_enabled: false
-    netbox_python_requirements: ["netbox-plugin-dns", "bleach"]
+    netbox_additional_python_requirements: ["netbox-plugin-dns", "bleach"]
     netbox_plugins: ["netbox_dns"]
     netbox_user_shell: "/bin/bash" # Used for testing
   pre_tasks:
