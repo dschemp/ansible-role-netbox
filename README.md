@@ -3,20 +3,24 @@ Ansible Role: netbox
 
 An Ansible role for deploying Netbox.
 
-Requirements
-------------
-
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
-
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+See [`defaults/main.yml`](defaults/main.yml).
 
-Dependencies
+External dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+- Postgres database
+- Redis
+- HTTP server
+- SMTP server (optional)
+
+The Postgres database and Redis can be external.
+
+The HTTP server (like nginx, caddy or Apache2/httpd) must be local to the Netbox installation.
+See [Netbox Docs - HTTP Server](https://netboxlabs.com/docs/netbox/en/stable/installation/5-http-server/) on how to configure the web server.
+Netbox is listening on the address provided in `netbox_listen_address` and contains the static files on `{{ netbox_path }}/netbox`.
 
 Example Playbook
 ----------------
@@ -34,8 +38,3 @@ License
 -------
 
 MIT
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
