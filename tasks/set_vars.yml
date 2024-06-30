@@ -1,12 +1,13 @@
 ---
 - name: "Set platform/version specific variables."
   ansible.builtin.include_vars: "{{ __netbox_vars_file }}"
-  loop: "{{ __netbox_vars_file_list | unique | list }}"
+  loop: "{{ __netbox_vars_file_list }}"
   vars:
     __netbox_vars_file_list:
-      - "{{ ansible_facts['os_family'] }}.yml"
-      - "{{ ansible_facts['distribution'] }}.yml"
-      - "{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_major_version'] }}.yml"
-      - "{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_version'] }}.yml"
+      - "OS-{{ ansible_facts['os_family'] }}.yml"
+      - "OS-{{ ansible_facts['os_family'] }}-{{ ansible_facts['distribution_major_version'] }}.yml"
+      - "D-{{ ansible_facts['distribution'] }}.yml"
+      - "D-{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_major_version'] }}.yml"
+      - "D-{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_version'] }}.yml"
     __netbox_vars_file: "{{ role_path }}/vars/{{ item }}"
   when: "__netbox_vars_file is file"
