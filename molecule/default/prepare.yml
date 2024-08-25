@@ -1,6 +1,6 @@
 ---
 - name: "Prepare."
-  hosts: "all,!sidecar"
+  hosts: "netbox"
   become: true
   tasks:
     - name: "Install Python 3.11."

@@ -33,7 +33,7 @@ platforms:
     networks:
       - name: molecule
 
-  - name: instance
+  - name: netbox
     image: "geerlingguy/docker-${MOLECULE_DOCKER_IMAGE:-rockylinux8}-ansible:latest"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:

@@ -1,6 +1,6 @@
 ---
 - name: "Converge."
-  hosts: "all,!sidecar"
+  hosts: "netbox"
   vars:
     netbox_listen_address: "0.0.0.0:8001"
     netbox_db_host: "postgres"
