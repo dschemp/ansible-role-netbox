@@ -8,3 +8,8 @@ __netbox_system_packages:
   - "libpq-dev"
   - "libssl-dev"
   - "zlib1g-dev"
+
+__netbox_ldap_system_packages:
+  - "libldap2-dev"
+  - "libsasl2-dev"
+  - "libssl-dev"

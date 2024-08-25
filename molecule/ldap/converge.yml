@@ -1,0 +1,39 @@
+---
+- name: "Converge."
+  hosts: "netbox"
+  vars:
+    netbox_listen_address: "0.0.0.0:8001"
+    netbox_db_host: "postgres"
+    netbox_db_password: "netbox123!"
+    netbox_redis_tasks_host: "redis"
+    netbox_census_reporting_enabled: false
+    netbox_additional_python_requirements: ["netbox-plugin-dns", "bleach"]
+    netbox_plugins: ["netbox_dns"]
+    netbox_user_shell: "/bin/bash" # Used for testing
+    # === LDAP setting ===
+    ldap_base_dn: "DC=example,DC=org"
+    netbox_ldap_enabled: true
+    netbox_ldap_uri: "ldap://openldap:1389"
+    netbox_ldap_bind_dn: "CN=admin,{{ ldap_base_dn }}"
+    netbox_ldap_bind_password: "admin"
+    netbox_ldap_user_dn_template: "uid=%(user)s,OU=People,{{ ldap_base_dn }}"
+    netbox_ldap_user_attribute_mapping:
+      "user_name": "uid"
+      "first_name": "givenName"
+      "last_name": "sn"
+      "email": "mail"
+    # netbox_ldap_required_group: "CN=Netbox Users,OU=Groups,{{ ldap_base_dn }}"
+    netbox_ldap_role_mapping:
+      "is_active": "CN=Netbox Users,OU=Groups,{{ ldap_base_dn }}"
+      "is_staff": "CN=Netbox Staff,OU=Groups,{{ ldap_base_dn }}"
+      "is_superuser": "CN=Netbox Admins,OU=Groups,{{ ldap_base_dn }}"
+  pre_tasks:
+    - name: "Set Python path."
+      when:
+        - "ansible_facts['os_family'] == 'RedHat'"
+        - "ansible_facts['distribution_major_version'] in ['8', '9']"
+      ansible.builtin.set_fact:
+        netbox_python_path: "/usr/bin/python3.11"
+  roles:
+    - role: "dschemp.netbox"
+      become: true

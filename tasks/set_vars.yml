@@ -11,3 +11,14 @@
       - "D-{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_version'] }}.yml"
     __netbox_vars_file: "{{ role_path }}/vars/{{ item }}"
   when: "__netbox_vars_file is file"
+
+- name: "Define netbox_system_packages."
+  when: "netbox_system_packages is not defined"
+  ansible.builtin.set_fact:
+    netbox_system_packages: "{{ __netbox_system_packages | list }}"
+
+- name: "Set vars for LDAP."
+  when: "netbox_ldap_enabled | bool"
+  ansible.builtin.set_fact:
+    netbox_system_packages: "{{ netbox_system_packages + __netbox_ldap_system_packages }}"
+    netbox_additional_python_requirements: "{{ netbox_additional_python_requirements + __netbox_ldap_python_packages }}"

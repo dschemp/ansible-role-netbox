@@ -1,0 +1,91 @@
+version: 1
+
+dn: DC=example,DC=org
+objectClass: domain
+objectClass: top
+
+# Create organizational containers
+dn: OU=Groups,DC=example,DC=org
+objectClass: organizationalUnit
+objectClass: top
+ou: Groups
+
+dn: OU=People,DC=example,DC=org
+objectClass: organizationalUnit
+objectClass: top
+ou: People
+
+# Create users
+# The password is for all users "netbox123".
+dn: uid=nbadmin,OU=People,DC=example,DC=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: simpleSecurityObject
+objectClass: top
+givenName: Emilio
+sn: Meyers
+cn: Emilio Meyers
+uid: nbadmin
+mail: Emilio.Meyers@example.org
+userPassword:: bmV0Ym94MTIz
+
+dn: uid=nbstaff,OU=People,DC=example,DC=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: simpleSecurityObject
+objectClass: top
+givenName: Lena
+sn: Ashley
+cn: Lena Ashley
+uid: nbstaff
+mail: Lena.Ashley@example.org
+userPassword:: bmV0Ym94MTIz
+
+dn: uid=nbuser,OU=People,DC=example,DC=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: simpleSecurityObject
+objectClass: top
+givenName: Robert
+sn: Bass
+cn: Robert Bass
+uid: nbuser
+mail: Robert.Bass@example.org
+userPassword:: bmV0Ym94MTIz
+
+dn: uid=sam.cooper,OU=People,DC=example,DC=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: simpleSecurityObject
+objectClass: top
+givenName: Sam
+sn: Cooper
+cn: Sam Cooper
+uid: sam.cooper
+mail: Sam.Cooper@example.org
+userPassword:: bmV0Ym94MTIz
+
+# Create Netbox groups
+dn: CN=Netbox Users,OU=Groups,DC=example,DC=org
+objectClass: groupOfNames
+objectClass: top
+cn: Netbox Users
+member: uid=nbstaff,OU=People,DC=example,DC=org
+member: uid=nbadmin,OU=People,DC=example,DC=org
+member: uid=nbuser,OU=People,DC=example,DC=org
+
+dn: CN=Netbox Staff,OU=Groups,DC=example,DC=org
+objectClass: groupOfNames
+objectClass: top
+cn: Netbox Staff
+member: uid=nbstaff,OU=People,DC=example,DC=org
+
+dn: CN=Netbox Admins,OU=Groups,DC=example,DC=org
+objectClass: groupOfNames
+objectClass: top
+cn: Netbox Admins
+member: uid=nbadmin,OU=People,DC=example,DC=org

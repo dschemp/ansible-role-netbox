@@ -58,6 +58,22 @@ __netbox_logging:
   handlers:
     console:
       class: "logging.StreamHandler"
-  root:
-    handlers: ["console"]
-    level: "WARNING"
+    netbox_auth_log:
+      level: "DEBUG"
+      class: "logging.handlers.RotatingFileHandler"
+      filename: "/tmp/django-ldap-debug.log"
+      maxBytes: 512000
+      backupCount: 5
+  loggers:
+    root:
+      handlers: ["console"]
+      level: "WARNING"
+    django:
+      handlers: ["console"]
+      level: "WARNING"
+    django_auth_ldap:
+      handlers: ["console", "netbox_auth_log"]
+      level: "DEBUG"
+
+__netbox_ldap_python_packages:
+  - "django-auth-ldap"

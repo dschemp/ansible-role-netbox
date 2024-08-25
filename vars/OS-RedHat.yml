@@ -7,3 +7,7 @@ __netbox_system_packages:
   - "libpq-devel"
   - "openssl-devel"
   - "redhat-rpm-config"
+
+__netbox_ldap_system_packages:
+  - "openldap-devel"
+  - "python3-devel"

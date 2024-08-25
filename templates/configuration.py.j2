@@ -154,6 +154,13 @@ CSRF_COOKIE_NAME = "{{ netbox_csrf_cookie_name }}"
 SESSION_COOKIE_NAME = "{{ netbox_session_cookie_name }}"
 {% endif -%}
 
+{% if netbox_ldap_enabled | bool %}
+# -----------------------------
+# LDAP configuration
+# -----------------------------
+REMOTE_AUTH_BACKEND = 'netbox.authentication.LDAPBackend'
+{% endif -%}
+
 # -------------------------
 # Date / Time configuration
 # -------------------------

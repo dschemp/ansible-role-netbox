@@ -45,6 +45,18 @@
     - "Run upgrade script."
     - "Restart services."
 
+- name: "Copy LDAP configuration."
+  when: "netbox_ldap_enabled | bool"
+  become: true
+  ansible.builtin.template:
+    src: "ldap_config.py.j2"
+    dest: "{{ netbox_path }}/netbox/netbox/ldap_config.py"
+    owner: "{{ netbox_user }}"
+    group: "{{ netbox_group }}"
+    mode: "0440"
+  notify:
+    - "Restart services."
+
 - name: "Copy gunicorn configuration."
   become: true
   ansible.builtin.template:

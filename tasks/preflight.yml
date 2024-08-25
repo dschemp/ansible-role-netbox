@@ -92,8 +92,3 @@
     home: "{{ netbox_path }}"
     shell: "{{ netbox_user_shell }}"
     state: "present"
-
-- name: "Define netbox_system_packages."
-  when: "netbox_system_packages is not defined"
-  ansible.builtin.set_fact:
-    netbox_system_packages: "{{ __netbox_system_packages | list }}"

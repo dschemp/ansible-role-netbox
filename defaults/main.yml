@@ -220,6 +220,69 @@ netbox_email_from_email: ""
 ## The name to use for the session cookie.
 # netbox_session_cookie_name: "sessionid"
 
+# -----------------------------
+# LDAP configuration
+# -----------------------------
+
+## Enable LDAP support.
+netbox_ldap_enabled: false
+
+## Connection URI to the LDAP server. Use 'ldap://' (non-secure) or 'ldaps://' (TLS-secured)
+# netbox_ldap_uri: "ldap://ldap.example.org:389"
+
+## Credentials for a bind user with access to the LDAP server.
+# netbox_ldap_bind_dn: ""
+# netbox_ldap_bind_password: ""
+
+## Enable StartTLS connection to LDAP. The LDAP uri must then start with 'ldap://'.
+# netbox_ldap_starttls_enabled: false
+
+## Skip verification of the certificate used for LDAPS.
+netbox_ldap_tls_skip_verify: false
+
+## Should be set if the username is part of the users DN.
+## Otherwise use 'netbox_ldap_user_search_*' below.
+# netbox_ldap_user_dn_template: "uid=%(user)s,OU=Users,DC=example,DC=org"
+
+netbox_ldap_user_attribute_mapping:
+  "username": "uid"
+  "email": "mail"
+  "first_name": "givenName"
+  "last_name": "sn"
+
+## User must be member of this group to access Netbox.
+## When using netbox_ldap_role_mapping, the user must be in the group assigned to 'is_active'.
+# netbox_ldap_required_group: "CN=Netbox Users,OU=Groups,DC=example,DC=org"
+
+## Map group memberships to specific roles inside Netbox.
+## The available roles are: 'is_active', 'is_staff' and 'is_superuser'.
+# netbox_ldap_role_mapping:
+#   "is_active": "cn=Netbox Users,OU=Groups,DC=example,DC=org"
+#   "is_staff": "cn=Netbox Staff,OU=Groups,DC=example,DC=org"
+#   "is_superuser": "cn=Netbox Superuser,OU=Groups,DC=example,DC=org"
+
+## User Search must only be enabled when using an Active Directory server.
+## User search affects performance. Use if you can DN templating via 'netbox_ldap_user_dn_template'.
+netbox_ldap_user_search_enabled: false
+netbox_ldap_user_search_base_dn: "OU=People,DC=example,DC=org"
+## Must be either 'SCOPE_ONELEVEL' (for immediate children) or 'SCOPE_SUBTREE' (for all descendants).
+netbox_ldap_user_search_scope: "SCOPE_SUBTREE"
+## Search filter to use when traversing the user subtree.
+## Use this when using an Active Directory server: "(|(userPrincipalName=%(user)s)(sAMAccountName=%(user)s))"
+netbox_ldap_user_search_filter: "(uid=%(user)s)"
+
+netbox_ldap_group_search_base_dn: "OU=Groups,DC=example,DC=org"
+# Must be either 'SCOPE_ONELEVEL' (for immediate children) or 'SCOPE_SUBTREE' (for all descendants).
+netbox_ldap_group_search_scope: "SCOPE_SUBTREE"
+## Search filter to use when traversing the group subtree.
+netbox_ldap_group_search_filter: "(objectClass=group)"
+## Allow use of nested groups. Setting this to true will affect performance.
+netbox_ldap_group_nesting_enabled: false
+
+## Amount in seconds to cache the users memberships and DN.
+## Set to 0 to disable caching.
+netbox_ldap_cache_timeout: 3600
+
 # ---------------------------
 # Gunicorn WSGI configuration
 # ---------------------------

@@ -1,0 +1,78 @@
+{{ ansible_managed | comment }}
+
+import ldap
+from django_auth_ldap.config import LDAPSearch, GroupOfNamesType, NestedGroupOfNamesType
+
+# =========== General Server Configuration ===========
+
+{# Server URI #}
+AUTH_LDAP_SERVER_URI = {{ netbox_ldap_uri | to_json }}
+
+# The following may be needed if you are binding to Active Directory.
+AUTH_LDAP_CONNECTION_OPTIONS = {
+    ldap.OPT_REFERRALS: 0
+}
+
+{# Set the DN and password for the NetBox service account. #}
+AUTH_LDAP_BIND_DN = {{ netbox_ldap_bind_dn | to_json }}
+AUTH_LDAP_BIND_PASSWORD = {{ netbox_ldap_bind_password | to_json }}
+
+{% if netbox_ldap_starttls_enabled is defined %}
+{# Use StartTLS #}
+AUTH_LDAP_START_TLS = {{ netbox_ldap_starttls_enabled | bool }}
+{% endif %}
+
+{# Include this setting if you want to ignore certificate errors. This might be needed to accept a self-signed cert. #}
+LDAP_IGNORE_CERT_ERRORS = {{ netbox_ldap_tls_skip_verify | bool }}
+
+{# Include this setting if you want to validate the LDAP server certificates against a CA certificate directory on your server. #}
+# LDAP_CA_CERT_DIR = '/etc/ssl/certs'
+
+{# Include this setting if you want to validate the LDAP server certificates against your own CA. #}
+# LDAP_CA_CERT_FILE = '/path/to/example-CA.crt'
+
+# =========== User Authentication ===========
+
+{% if netbox_ldap_user_search_enabled | bool %}
+{# This search matches users with the sAMAccountName equal to the provided username.
+This is required if the user's username is not in their DN (Active Directory). #}
+AUTH_LDAP_USER_SEARCH = LDAPSearch({{ netbox_ldap_user_search_base_dn | to_json }}, ldap.{{ netbox_ldap_user_search_scope }}, {{ netbox_ldap_user_search_filter | to_json }})
+{% endif -%}
+
+{% if netbox_ldap_user_dn_template is defined %}
+{# If a user's DN is producible from their username, we don't need to search. #}
+AUTH_LDAP_USER_DN_TEMPLATE = {{ netbox_ldap_user_dn_template | to_json }}
+{% endif -%}
+
+{# You can map user attributes to Django attributes as so. #}
+AUTH_LDAP_USER_ATTR_MAP = {{ netbox_ldap_user_attribute_mapping | to_nice_json }}
+
+# =========== User Groups for Permissions ===========
+
+{# This search ought to return all groups to which the user belongs.
+django_auth_ldap uses this to determine group hierarchy. #}
+AUTH_LDAP_GROUP_SEARCH = LDAPSearch({{ netbox_ldap_group_search_base_dn | to_json }}, ldap.{{ netbox_ldap_group_search_scope }}, {{ netbox_ldap_group_search_filter | to_json }})
+{% if netbox_ldap_group_nesting_enabled | bool %}
+AUTH_LDAP_GROUP_TYPE = NestedGroupOfNamesType()
+{% else %}
+AUTH_LDAP_GROUP_TYPE = GroupOfNamesType()
+{% endif %}
+
+{% if netbox_ldap_required_group is defined %}
+{# Define a group required to login. #}
+AUTH_LDAP_REQUIRE_GROUP = {{ netbox_ldap_required_group | to_json }}
+{% endif %}
+
+{# Mirror LDAP group assignments. #}
+AUTH_LDAP_MIRROR_GROUPS = True
+
+{% if netbox_ldap_role_mapping is defined %}
+{# Define special user types using groups. Exercise great caution when assigning superuser status. #}
+AUTH_LDAP_USER_FLAGS_BY_GROUP = {{ netbox_ldap_role_mapping | to_nice_json }}
+{% endif %}
+
+{# For more granular permissions, we can map LDAP groups to Django groups. #}
+AUTH_LDAP_FIND_GROUP_PERMS = True
+
+{# Cache groups for one hour to reduce LDAP traffic #}
+AUTH_LDAP_CACHE_TIMEOUT = {{ netbox_ldap_cache_timeout | to_json }}
