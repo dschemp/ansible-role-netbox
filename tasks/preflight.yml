@@ -37,6 +37,31 @@
     __netbox_python_version.rc != 0 or
     __netbox_python_version.stdout | replace('Python ', '') is version('3.10', '<')
 
+# Starting Netbox v4.1.0 a release.yaml is put into the release.
+- name: "Check if Netbox release file exists."
+  become: true
+  ansible.builtin.stat:
+    path: "{{ netbox_path }}/netbox/release.yaml"
+  register: "__netbox_release_yaml_stat"
+
+- name: "Get currently installed version from release.yaml."
+  when: "__netbox_release_yaml_stat.stat.exists"
+  block:
+    - name: "Read release.yaml."
+      become: true
+      ansible.builtin.slurp:
+        path: "{{ netbox_path }}/netbox/release.yaml"
+      register: "__netbox_release_yaml_slurp"
+
+    - name: "Set installed Netbox version variable."
+      ansible.builtin.set_fact:
+        __netbox_installed_version: "{{ (__netbox_release_yaml_slurp.content | b64decode | from_yaml).version }}"
+
+    - name: "Debug currently installed Netbox version."
+      ansible.builtin.debug:
+        msg: "{{ __netbox_installed_version }}"
+        verbosity: 1
+
 - name: "Check if Netbox is already installed."
   become: true
   ansible.builtin.stat:
@@ -44,7 +69,10 @@
   register: "__netbox_settings_py_stat"
 
 - name: "Get currently installed version."
-  when: "__netbox_settings_py_stat.stat.exists"
+  when:
+    - "__netbox_settings_py_stat.stat.exists"
+    # only resort to this method if no release.yaml has been found and thus the version has already been set
+    - "__netbox_installed_version is not defined"
   block:
     - name: "Get currently installed Netbox version."
       become: true
